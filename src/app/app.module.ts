@@ -3,13 +3,38 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
-import { CartComponent } from './components/cart/cart.component';
+import { NavbarComponent } from './common/navbar/navbar.component';
+import { CartComponent } from './shopping/cart/cart.component';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { environment } from 'src/environments/environment';
+import { AdminOrdersComponent } from './admin/admin-orders/admin-orders.component';
+import { AdminProductsComponent } from './admin/admin-products/admin-products.component';
+import { OrdersComponent } from './profile/orders/orders.component';
+import { LoginComponent } from './auth/login/login.component';
+import { ProductsComponent } from './shopping/products/products.component';
+import { getDatabase, provideDatabase } from '@angular/fire/database';
 
 @NgModule({
-  declarations: [AppComponent, NavBarComponent, CartComponent],
-  imports: [BrowserModule, AppRoutingModule, NgbDropdownModule],
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    CartComponent,
+    AdminOrdersComponent,
+    AdminProductsComponent,
+    OrdersComponent,
+    LoginComponent,
+    ProductsComponent,
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    NgbDropdownModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth()),
+    provideDatabase(() => getDatabase()),
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
