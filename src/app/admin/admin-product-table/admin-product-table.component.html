@@ -1,0 +1,18 @@
+<div class="container-fluid mt-4">
+  <table class="w-100">
+    <thead>
+      <th></th>
+      <th>Title</th>
+      <th>Price</th>
+      <th></th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let product of products | async; index as i">
+        <td>{{ i + 1 }}</td>
+        <td>{{ product.name }}</td>
+        <td>R {{ product.price }}</td>
+        <td><a [routerLink]="product.id" class="btn text-primary">Edit</a></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

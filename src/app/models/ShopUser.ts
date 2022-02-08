@@ -5,5 +5,5 @@ export interface ShopUser {
   photoUrl: string | null;
   providerId: string;
   displayName: string | null;
-  isAdmin?: boolean;
+  isAdmin: boolean;
 }

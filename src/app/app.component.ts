@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { FirebaseAuthService } from './auth/firebase-auth.service';
 import { UserService } from './services/user.service';
 
@@ -16,23 +17,21 @@ export class AppComponent {
   ) {
     authService.user$.subscribe((user) => {
       if (!user) {
-        localStorage.removeItem('returnUrl');
+        console.log('no logged in user');
         return;
       }
 
-      userService.save({
-        uid: user.uid,
-        email: user.email ?? '',
-        emailVerified: user.emailVerified,
-        photoUrl: user.photoURL,
-        providerId: user.providerId,
-        displayName: user.displayName,
-      });
+      firstValueFrom(userService.save(user))
+        .then(() => {
+          console.log('save success');
+          const returnUrl = localStorage.getItem('returnUrl');
+          localStorage.removeItem('returnUrl');
 
-      const returnUrl = localStorage.getItem('returnUrl');
-
-      console.log(returnUrl);
-      router.navigateByUrl(returnUrl ?? '');
+          if (returnUrl) {
+            router.navigateByUrl(returnUrl);
+          }
+        })
+        .catch((err) => console.error(err));
     });
   }
 }

@@ -10,18 +10,22 @@
           </li>
         </div>
         <div>
-          <li *ngIf="user$ | async as user" ngbDropdown class="nav-item">
+          <li *ngIf="user" ngbDropdown class="nav-item">
             <a class="nav-link" role="button" ngbDropdownToggle>{{
               user.displayName
             }}</a>
             <div ngbDropdownMenu>
               <a ngbDropdownItem routerLink="profile/orders">My Orders</a>
-              <a ngbDropdownItem routerLink="admin/orders">Manage Orders</a>
-              <a ngbDropdownItem routerLink="admin/products">Manage Products</a>
+              <ng-container *ngIf="user.isAdmin">
+                <a ngbDropdownItem routerLink="admin/orders">Manage Orders</a>
+                <a ngbDropdownItem routerLink="admin/products"
+                  >Manage Products</a
+                >
+              </ng-container>
               <a ngbDropdownItem (click)="logout()">Logout</a>
             </div>
           </li>
-          <li *ngIf="!(user$ | async)" class="nav-item">
+          <li *ngIf="!user" class="nav-item">
             <a routerLink="login" class="nav-link">Login</a>
           </li>
         </div>
