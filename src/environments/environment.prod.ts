@@ -3,6 +3,8 @@ export const environment = {
   firebase: {
     apiKey: 'AIzaSyDINsBpoElET62Am5cvJbohVbB8H2W8zIY',
     authDomain: 'jaco-udemy-project.firebaseapp.com',
+    databaseURL:
+      'https://jaco-udemy-project-default-rtdb.europe-west1.firebasedatabase.app/',
     projectId: 'jaco-udemy-project',
     storageBucket: 'jaco-udemy-project.appspot.com',
     messagingSenderId: '554140479530',
