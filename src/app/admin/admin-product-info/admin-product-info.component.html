@@ -1,7 +1,7 @@
-<div class="container-md">
+<div *ngIf="!loading" class="container-md">
   <div class="row gx-5">
     <div class="col-sm mx-sm-5 py-sm-2">
-      <form>
+      <form [formGroup]="productForm">
         <div class="mb-3">
           <label for="productTitle" class="form-label">Title</label>
           <input
@@ -9,6 +9,7 @@
             class="form-control"
             id="productTitle"
             placeholder="Product Title"
+            formControlName="title"
           />
         </div>
         <div class="mb-3">
@@ -20,14 +21,19 @@
               class="form-control"
               id="productPrice"
               placeholder="Product Price"
+              formControlName="price"
             />
           </div>
         </div>
 
         <div class="mb-3">
           <label for="categorySelect" class="form-label">Category</label>
-          <select id="categorySelect" class="form-select">
-            <option selected>Please select a category</option>
+          <select
+            id="categorySelect"
+            class="form-select"
+            formControlName="category"
+          >
+            <option selected value="-1">Please select a category</option>
             <option
               *ngFor="let category of categories | async"
               value="{{ category.id }}"
@@ -44,14 +50,29 @@
             class="form-control"
             id="productImageUrl"
             placeholder="Product Image URL"
+            formControlName="imageUrl"
           />
         </div>
         <div class="mb-3">
-          <button class="btn btn-primary px-3 me-3">Save</button>
-          <button class="btn btn-danger px-3 ms-3">Delete</button>
+          <button
+            class="btn btn-primary px-3 me-3"
+            (click)="save()"
+            [disabled]="productForm.errors"
+          >
+            Save
+          </button>
+          <button
+            *ngIf="product"
+            class="btn btn-danger px-3 ms-3"
+            (click)="delete()"
+          >
+            Delete
+          </button>
         </div>
       </form>
     </div>
-    <div class="col-sm mx-sm-5 py-sm-2 border">world</div>
+    <div class="col-sm mx-sm-5 py-sm-2 border">
+      <img [src]="imageUrl" alt="Image of product" width="500" />
+    </div>
   </div>
 </div>

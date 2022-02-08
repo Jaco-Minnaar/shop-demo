@@ -4,5 +4,5 @@ export interface Product extends BaseModel {
   name: string;
   price: number;
   imageUrl: string;
-  productId: string;
+  categoryId: string;
 }
