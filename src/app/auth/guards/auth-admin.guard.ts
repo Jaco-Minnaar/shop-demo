@@ -5,7 +5,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { map, Observable, of, switchMap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { UserService } from 'src/app/services/user.service';
 import { FirebaseAuthService } from '../firebase-auth.service';
 
@@ -26,15 +26,8 @@ export class AuthAdminGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.authService.user$.pipe(
-      switchMap((user) => {
-        if (!user) return of();
-
-        console.log('getting user');
-        return this.userService.get(user.uid);
-      }),
+    return this.authService.appUser$.pipe(
       map((shopUser) => {
-        console.log(shopUser);
         if (!shopUser || !shopUser.isAdmin) return false;
 
         return true;

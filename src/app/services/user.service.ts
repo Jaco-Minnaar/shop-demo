@@ -44,7 +44,6 @@ export class UserService {
   get(uid: string): Observable<ShopUser | null> {
     return object(ref(this.db, `/users/${uid}`)).pipe(
       map((change) => {
-        console.log(change.snapshot.key);
         return change.snapshot.val();
       })
     );

@@ -7,14 +7,27 @@ import {
   signOut,
   User,
 } from '@angular/fire/auth';
-import { Observable, of } from 'rxjs';
+import { Observable, of, switchMap } from 'rxjs';
+import { ShopUser } from '../models/ShopUser';
+import { UserService } from '../services/user.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FirebaseAuthService {
   user$: Observable<User | null>;
-  constructor(private auth: Auth) {
+
+  get appUser$(): Observable<ShopUser | null> {
+    return this.user$.pipe(
+      switchMap((user) => {
+        if (!user) return of(null);
+
+        return this.userService.get(user.uid);
+      })
+    );
+  }
+
+  constructor(private auth: Auth, private userService: UserService) {
     this.user$ = authState(auth);
   }
 

@@ -15,6 +15,8 @@ import { OrdersComponent } from './profile/orders/orders.component';
 import { LoginComponent } from './auth/login/login.component';
 import { ProductsComponent } from './shopping/products/products.component';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
+import { AdminProductInfoComponent } from './admin/admin-product-info/admin-product-info.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -26,11 +28,13 @@ import { getDatabase, provideDatabase } from '@angular/fire/database';
     OrdersComponent,
     LoginComponent,
     ProductsComponent,
+    AdminProductInfoComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     NgbDropdownModule,
+    ReactiveFormsModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
