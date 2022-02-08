@@ -1,0 +1,16 @@
+<ng-container *ngIf="product">
+  <div class="card">
+    <img
+      [src]="product.imageUrl"
+      alt="{{ product.name }} image"
+      class="card-img-top"
+      *ngIf="product.imageUrl"
+    />
+    <div class="card-body">
+      <h4 class="card-title">{{ product.name }}</h4>
+      <p class="card-text" *ngIf="product.price && product.price >= 0">
+        R {{ product.price }}
+      </p>
+    </div>
+  </div>
+</ng-container>

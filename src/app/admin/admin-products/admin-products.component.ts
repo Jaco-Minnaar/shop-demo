@@ -10,6 +10,8 @@ import { ProductService } from 'src/app/services/product.service';
   styleUrls: ['./admin-products.component.scss'],
 })
 export class AdminProductsComponent implements OnInit {
+  productFilter: string = '';
+
   constructor() {}
 
   ngOnInit(): void {}

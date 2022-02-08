@@ -1,12 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import {
-  ActivatedRoute,
-  ActivatedRouteSnapshot,
-  Router,
-} from '@angular/router';
-import { firstValueFrom, Observable } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { Product } from 'src/app/models/Product';
 import { ProductCategory } from 'src/app/models/ProductCategory';
 import { ProductCategoryService } from 'src/app/services/product-category.service';
@@ -23,6 +19,21 @@ export class AdminProductInfoComponent implements OnInit {
   productForm: FormGroup = new FormGroup({});
   product?: Product;
   loading = true;
+  newProduct = true;
+
+  formChangeSub?: Subscription;
+
+  get title(): string {
+    return this.productForm.get('title')?.value ?? '';
+  }
+
+  get price(): number {
+    return this.productForm.get('price')?.value ?? '';
+  }
+
+  get category(): string {
+    return this.productForm.get('category')?.value ?? '';
+  }
 
   get imageUrl(): string {
     return this.productForm.get('imageUrl')?.value ?? '';
@@ -44,10 +55,21 @@ export class AdminProductInfoComponent implements OnInit {
     if (!id) return;
 
     if (id === 'new') {
-      console.log('new product');
+      this.product = {
+        id: '',
+        name: '',
+        price: -1,
+        categoryId: '-1',
+        imageUrl: '',
+      };
+
+      this.newProduct = true;
+
       this.createForm();
       return;
     }
+
+    this.newProduct = false;
 
     firstValueFrom(this.productService.getItem(id)).then((product) => {
       if (!product) {
@@ -56,7 +78,7 @@ export class AdminProductInfoComponent implements OnInit {
       }
 
       this.product = product;
-      this.createForm(product);
+      this.createForm();
     });
   }
 
@@ -77,7 +99,7 @@ export class AdminProductInfoComponent implements OnInit {
     };
 
     firstValueFrom(
-      this.product
+      !this.newProduct
         ? this.productService.updateItem(product)
         : this.productService.createItem(product)
     )
@@ -92,12 +114,24 @@ export class AdminProductInfoComponent implements OnInit {
       .catch((err) => alert(err));
   }
 
-  private createForm(product?: Product | undefined) {
+  private createForm() {
     this.productForm = this.fb.group({
-      title: [product?.name ?? '', Validators.required],
-      price: [product?.price ?? '', Validators.required],
-      category: [product?.categoryId ?? -1, Validators.required],
-      imageUrl: [product?.imageUrl ?? '', Validators.required],
+      title: [this.product?.name ?? '', Validators.required],
+      price: [
+        (this.product?.price ?? '') >= 0 ? this.product?.price : '',
+        Validators.required,
+      ],
+      category: [this.product?.categoryId ?? -1, Validators.required],
+      imageUrl: [this.product?.imageUrl ?? '', Validators.required],
+    });
+
+    this.formChangeSub = this.productForm.valueChanges.subscribe(() => {
+      if (!this.product) return;
+      console.log('changes');
+      this.product.name = this.title;
+      this.product.price = this.price;
+      this.product.categoryId = this.category;
+      this.product.imageUrl = this.imageUrl;
     });
 
     this.loading = false;

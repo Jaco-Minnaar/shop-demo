@@ -1,0 +1,16 @@
+<div class="container-md">
+  <div class="d-flex justify-content-between">
+    <h1>Products</h1>
+    <a class="btn btn-primary my-2" routerLink="new">+ New Product</a>
+  </div>
+  <div class="mb-3">
+    <label for="productsFilter" class="form-label">Filter</label>
+    <input
+      type="text"
+      class="form-control"
+      id="productsFilter"
+      [(ngModel)]="productFilter"
+    />
+  </div>
+  <app-admin-product-table [filter]="productFilter"></app-admin-product-table>
+</div>

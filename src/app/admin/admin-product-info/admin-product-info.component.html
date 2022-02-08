@@ -53,26 +53,30 @@
             formControlName="imageUrl"
           />
         </div>
-        <div class="mb-3">
-          <button
-            class="btn btn-primary px-3 me-3"
-            (click)="save()"
-            [disabled]="productForm.errors"
-          >
-            Save
-          </button>
-          <button
-            *ngIf="product"
-            class="btn btn-danger px-3 ms-3"
-            (click)="delete()"
-          >
-            Delete
-          </button>
+        <div class="mb-3 d-flex justify-content-between">
+          <div>
+            <button
+              class="btn btn-primary px-3 me-3"
+              (click)="save()"
+              [disabled]="productForm.errors"
+            >
+              Save
+            </button>
+            <button
+              *ngIf="product"
+              class="btn btn-danger px-3 ms-3"
+              (click)="delete()"
+            >
+              Delete
+            </button>
+          </div>
+          <a class="btn btn-dark" routerLink="..">Cancel</a>
         </div>
       </form>
     </div>
-    <div class="col-sm mx-sm-5 py-sm-2 border">
-      <img [src]="imageUrl" alt="Image of product" width="500" />
+    <div class="col-sm mx-sm-5 py-sm-2">
+      <h3>Preview</h3>
+      <app-product-card [product]="product"></app-product-card>
     </div>
   </div>
 </div>
