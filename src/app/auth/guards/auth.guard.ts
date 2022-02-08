@@ -7,7 +7,7 @@ import {
   UrlTree,
 } from '@angular/router';
 import { map, Observable } from 'rxjs';
-import { FirebaseAuthService } from './firebase-auth.service';
+import { FirebaseAuthService } from '../firebase-auth.service';
 
 @Injectable({
   providedIn: 'root',
