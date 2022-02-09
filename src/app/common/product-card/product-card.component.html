@@ -1,15 +1,17 @@
 <ng-container *ngIf="product">
   <div class="card">
     <img
-      [src]="product.imageUrl"
+      [src]="
+        product.imageUrl ||
+        'https://images.pexels.com/photos/1414651/pexels-photo-1414651.jpeg?cs=srgb&dl=pexels-adonyi-g%C3%A1bor-1414651.jpg&fm=jpg'
+      "
       alt="{{ product.name }} image"
       class="card-img-top"
-      *ngIf="product.imageUrl"
     />
     <div class="card-body">
-      <h4 class="card-title">{{ product.name }}</h4>
+      <h4 class="card-title">{{ product.name || "Product Title" }}</h4>
       <p class="card-text" *ngIf="product.price && product.price >= 0">
-        R {{ product.price }}
+        {{ product.price | currency: "R ":true }}
       </p>
     </div>
   </div>

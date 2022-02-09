@@ -19,32 +19,20 @@ import { AdminProductInfoComponent } from './admin/admin-product-info/admin-prod
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminProductTableComponent } from './admin/admin-product-table/admin-product-table.component';
 import { ProductCardComponent } from './common/product-card/product-card.component';
+import { SharedModule } from './common/common.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    NavbarComponent,
-    CartComponent,
-    AdminOrdersComponent,
-    AdminProductsComponent,
-    OrdersComponent,
-    LoginComponent,
-    ProductsComponent,
-    AdminProductInfoComponent,
-    AdminProductTableComponent,
-    ProductCardComponent,
-  ],
+  declarations: [AppComponent, OrdersComponent, LoginComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgbDropdownModule,
-    ReactiveFormsModule,
-    FormsModule,
+    SharedModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideDatabase(() => getDatabase()),
   ],
   providers: [],
   bootstrap: [AppComponent],
+  exports: [NavbarComponent, ProductCardComponent],
 })
 export class AppModule {}

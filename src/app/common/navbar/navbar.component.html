@@ -2,23 +2,21 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" routerLink="/">O</a>
-
       <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100 justify-content-between">
-        <div>
+        <span></span>
+        <div class="d-flex">
           <li class="nav-item">
-            <a routerLink="shopping-cart" class="nav-link">Shopping cart</a>
+            <a routerLink="/cart" class="nav-link">Shopping cart</a>
           </li>
-        </div>
-        <div>
           <li *ngIf="user" ngbDropdown class="nav-item">
             <a class="nav-link" role="button" ngbDropdownToggle>{{
               user.displayName
             }}</a>
             <div ngbDropdownMenu>
-              <a ngbDropdownItem routerLink="profile/orders">My Orders</a>
+              <a ngbDropdownItem routerLink="/profile/orders">My Orders</a>
               <ng-container *ngIf="user.isAdmin">
-                <a ngbDropdownItem routerLink="admin/orders">Manage Orders</a>
-                <a ngbDropdownItem routerLink="admin/products"
+                <a ngbDropdownItem routerLink="/admin/orders">Manage Orders</a>
+                <a ngbDropdownItem routerLink="/admin/products"
                   >Manage Products</a
                 >
               </ng-container>

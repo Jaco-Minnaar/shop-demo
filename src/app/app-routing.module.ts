@@ -12,12 +12,9 @@ import { AdminProductInfoComponent } from './admin/admin-product-info/admin-prod
 
 const routes: Routes = [
   {
-    path: 'products',
-    component: ProductsComponent,
-  },
-  {
-    path: 'shopping-cart',
-    component: CartComponent,
+    path: '',
+    loadChildren: () =>
+      import('./shopping/shopping.module').then((m) => m.ShoppingModule),
   },
   {
     path: 'login',
@@ -29,21 +26,11 @@ const routes: Routes = [
     component: OrdersComponent,
     canActivate: [AuthGuard],
   },
-
   {
-    path: 'admin/orders',
-    component: AdminOrdersComponent,
-    canActivate: [AuthGuard, AuthAdminGuard],
-  },
-  {
-    path: 'admin/products',
-    component: AdminProductsComponent,
-    canActivate: [AuthGuard, AuthAdminGuard],
-  },
-  {
-    path: 'admin/products/:id',
-    component: AdminProductInfoComponent,
-    canActivate: [AuthGuard, AuthAdminGuard],
+    path: 'admin',
+    loadChildren: () =>
+      import('./admin/admin.module').then((m) => m.AdminModule),
+    canActivateChild: [AuthGuard, AuthAdminGuard],
   },
   {
     path: '**',
