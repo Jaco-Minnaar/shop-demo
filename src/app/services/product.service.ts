@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Database } from '@angular/fire/database';
-import { Service } from '../common/service';
+import { Service } from './service';
 import { Product } from '../models/Product';
 
 @Injectable({

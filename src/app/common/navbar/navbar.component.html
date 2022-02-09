@@ -6,7 +6,12 @@
         <span></span>
         <div class="d-flex">
           <li class="nav-item">
-            <a routerLink="/cart" class="nav-link">Shopping cart</a>
+            <a routerLink="/cart" class="nav-link">
+              Shopping cart
+              <span class="badge rounded-pill bg-warning">
+                {{ cartItemsTotal }}
+              </span>
+            </a>
           </li>
           <li *ngIf="user" ngbDropdown class="nav-item">
             <a class="nav-link" role="button" ngbDropdownToggle>{{

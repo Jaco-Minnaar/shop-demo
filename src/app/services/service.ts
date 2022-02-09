@@ -12,17 +12,17 @@ import { from, map, Observable, of } from 'rxjs';
 import { BaseModel } from '../models/BaseModel';
 
 export abstract class Service<T extends BaseModel> {
-  constructor(protected db: Database, protected path: string) {}
+  list$: Observable<T[]>;
+
+  constructor(protected db: Database, protected path: string) {
+    this.list$ = list(ref(this.db, this.path)).pipe(
+      map((changes) => changes.map((change) => change.snapshot.val()))
+    );
+  }
 
   getItem(id: string): Observable<T | null> {
     return object(ref(this.db, `${this.path}/${id}`)).pipe(
       map((item) => item.snapshot.val())
-    );
-  }
-
-  getItems(): Observable<T[]> {
-    return list(ref(this.db, this.path)).pipe(
-      map((changes) => changes.map((change) => change.snapshot.val()))
     );
   }
 

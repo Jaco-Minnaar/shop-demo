@@ -1,5 +1,5 @@
 <ng-container *ngIf="product">
-  <div class="card">
+  <div class="card my-2">
     <img
       [src]="
         product.imageUrl ||
@@ -13,6 +13,7 @@
       <p class="card-text" *ngIf="product.price && product.price >= 0">
         {{ product.price | currency: "R ":true }}
       </p>
+      <ng-content></ng-content>
     </div>
   </div>
 </ng-container>
