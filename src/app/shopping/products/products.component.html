@@ -1,1 +1,77 @@
-<p>products works!</p>
+<div class="container-xl">
+  <div class="row">
+    <div class="col-2">
+      <div id="side-bar" class="sticky-top">
+        <div class="btn-group-vertical" role="radiogroup">
+          <input
+            type="radio"
+            class="btn-check"
+            name="categories"
+            id="radioAll"
+            autocomplete="off"
+            checked
+            [value]="-1"
+            [formControl]="categoryFormControl"
+          />
+          <label for="radioAll" class="btn btn-outline-primary">
+            All Categories
+          </label>
+
+          <ng-container *ngFor="let category of productCategories$ | async">
+            <input
+              type="radio"
+              class="btn-check"
+              name="categories"
+              [id]="'radio' + category.id"
+              autocomplete="off"
+              [value]="category.id"
+              [formControl]="categoryFormControl"
+            />
+            <label
+              [for]="'radio' + category.id"
+              class="btn btn-outline-primary"
+            >
+              {{ category.name }}
+            </label>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="col-10">
+      <div class="row">
+        <app-product-card
+          class="col-sm-3"
+          *ngFor="let product of products$ | async"
+          [product]="product"
+        >
+          <button
+            class="btn btn-primary w-100"
+            *ngIf="!userCart || !userCart.items || !userCart.items[product.id]"
+            (click)="modifyCart(product.id, 1)"
+          >
+            Add To cart
+          </button>
+
+          <div
+            *ngIf="userCart && userCart.items && userCart.items[product.id] > 0"
+            class="d-flex justify-content-between w-100"
+          >
+            <button
+              class="btn btn-primary w-25"
+              (click)="modifyCart(product.id, -1)"
+            >
+              -
+            </button>
+            <span>{{ userCart.items[product.id] }}</span>
+            <button
+              class="btn btn-primary w-25"
+              (click)="modifyCart(product.id, 1)"
+            >
+              +
+            </button>
+          </div>
+        </app-product-card>
+      </div>
+    </div>
+  </div>
+</div>

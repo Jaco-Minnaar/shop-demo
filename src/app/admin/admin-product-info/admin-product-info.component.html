@@ -10,6 +10,7 @@
             id="productTitle"
             placeholder="Product Title"
             formControlName="title"
+            required
           />
         </div>
         <div class="mb-3">
@@ -22,6 +23,7 @@
               id="productPrice"
               placeholder="Product Price"
               formControlName="price"
+              required
             />
           </div>
         </div>
@@ -32,6 +34,7 @@
             id="categorySelect"
             class="form-select"
             formControlName="category"
+            required
           >
             <option selected value="-1">Please select a category</option>
             <option
@@ -51,6 +54,7 @@
             id="productImageUrl"
             placeholder="Product Image URL"
             formControlName="imageUrl"
+            required
           />
         </div>
         <div class="mb-3 d-flex justify-content-between">
@@ -58,7 +62,7 @@
             <button
               class="btn btn-primary px-3 me-3"
               (click)="save()"
-              [disabled]="productForm.errors"
+              [disabled]="!productForm.valid || category === '-1'"
             >
               Save
             </button>

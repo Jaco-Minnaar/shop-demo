@@ -22,18 +22,16 @@ export class AdminProductTableComponent implements OnInit, OnChanges {
   constructor(private productService: ProductService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.products = this.productService
-      .getItems()
-      .pipe(
-        map((products) =>
-          products.filter((product) =>
-            product.name.toLowerCase().match(this.filter?.toLowerCase() ?? '')
-          )
+    this.products = this.productService.list$.pipe(
+      map((products) =>
+        products.filter((product) =>
+          product.name.toLowerCase().match(this.filter?.toLowerCase() ?? '')
         )
-      );
+      )
+    );
   }
 
   ngOnInit(): void {
-    this.products = this.productService.getItems();
+    this.products = this.productService.list$;
   }
 }

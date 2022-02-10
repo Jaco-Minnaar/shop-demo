@@ -1,0 +1,12 @@
+.btn-group-vertical {
+  .btn-outline-primary {
+    border-color: #dedede;
+  }
+  :not(.btn-check:checked + .btn-outline-primary) {
+    color: #343434;
+  }
+}
+
+#side-bar {
+  top: 80px;
+}

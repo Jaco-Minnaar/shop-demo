@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import {
   Auth,
   authState,
@@ -14,7 +14,7 @@ import { UserService } from '../services/user.service';
 @Injectable({
   providedIn: 'root',
 })
-export class FirebaseAuthService {
+export class FirebaseAuthService extends EventEmitter {
   user$: Observable<User | null>;
 
   get appUser$(): Observable<ShopUser | null> {
@@ -28,10 +28,12 @@ export class FirebaseAuthService {
   }
 
   constructor(private auth: Auth, private userService: UserService) {
+    super();
     this.user$ = authState(auth);
   }
 
   login(returnUrl: string) {
+    this.emit();
     localStorage.setItem('returnUrl', returnUrl);
     const provider = new GoogleAuthProvider();
     signInWithRedirect(this.auth, provider);

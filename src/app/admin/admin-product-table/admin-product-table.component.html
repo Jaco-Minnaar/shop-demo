@@ -10,7 +10,7 @@
       <tr *ngFor="let product of products | async; index as i">
         <td>{{ i + 1 }}</td>
         <td>{{ product.name }}</td>
-        <td>R {{ product.price }}</td>
+        <td>{{ product.price | currency: "R ":true }}</td>
         <td><a [routerLink]="product.id" class="btn text-primary">Edit</a></td>
       </tr>
     </tbody>

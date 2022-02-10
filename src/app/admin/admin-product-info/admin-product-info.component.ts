@@ -48,13 +48,12 @@ export class AdminProductInfoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.categories = this.productCategoryService.getItems();
+    this.categories = this.productCategoryService.list$;
 
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    const snapshot = this.activatedRoute.snapshot;
+    const id = snapshot.paramMap.get('id');
 
-    if (!id) return;
-
-    if (id === 'new') {
+    if (!id) {
       this.product = {
         id: '',
         name: '',

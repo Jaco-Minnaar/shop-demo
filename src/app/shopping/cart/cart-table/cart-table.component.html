@@ -1,0 +1,42 @@
+<div class="container-fluid mt-4" *ngIf="cart && products && cart.items">
+  <table class="w-100 table">
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+        <th>Price per Item</th>
+        <th>Total Price</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let cartItemKey of cartProductKeys">
+        <td>{{ products[cartItemKey].name }}</td>
+        <td>
+          <div class="d-flex justify-content-between">
+            <button
+              class="btn btn-primary w-25"
+              (click)="modifyCart(products[cartItemKey].id, -1)"
+            >
+              -
+            </button>
+            <span>{{ cart.items[cartItemKey] }}</span>
+            <button
+              class="btn btn-primary w-25"
+              (click)="modifyCart(products[cartItemKey].id, 1)"
+            >
+              +
+            </button>
+          </div>
+        </td>
+        <td>{{ products[cartItemKey].price | currency: "R " }}</td>
+        <td>{{ calculatePrice(cartItemKey) | currency: "R " }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{ totalPrice | currency: "R " }}</td>
+    </tfoot>
+  </table>
+</div>

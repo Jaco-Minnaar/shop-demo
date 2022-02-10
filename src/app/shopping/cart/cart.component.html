@@ -1,1 +1,7 @@
-<p>cart works!</p>
+<div class="container-md" *ngIf="cart">
+  <h1 class="display-6">Shopping Cart</h1>
+  <p>You have {{ itemCount }} items in your cart.</p>
+  <app-cart-table [cart]="cart"></app-cart-table>
+
+  <button class="btn btn-danger" (click)="clearCart()">Clear Cart</button>
+</div>
