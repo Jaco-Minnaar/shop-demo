@@ -43,13 +43,13 @@ export class CartTableComponent implements OnInit, OnDestroy {
   }
 
   calculatePrice(productKey: string): number {
-    if (!this.cart || !this.products) return 0;
+    if (!this.cart || !this.products || !this.cart.items) return 0;
 
     return this.products[productKey].price * this.cart.items[productKey];
   }
 
   async modifyCart(productId: string, amount: number): Promise<void> {
-    if (!this.cart) return;
+    if (!this.cart || !this.cart.items) return;
 
     if (this.cart.items[productId] === undefined) {
       this.cart.items[productId] = 0;

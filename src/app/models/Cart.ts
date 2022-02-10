@@ -1,7 +1,7 @@
 import { BaseModel } from './BaseModel';
 
 export interface Cart extends BaseModel {
-  items: { [id: string]: number };
+  items?: { [id: string]: number };
   uid: string | null;
 }
 

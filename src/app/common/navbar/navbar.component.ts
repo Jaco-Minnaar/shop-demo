@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { FirebaseAuthService } from 'src/app/auth/firebase-auth.service';
@@ -17,7 +18,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
   get cartItemsTotal(): number {
     if (!this.cart) return 0;
 
-    return Object.values(this.cart.items).reduce((s, c) => s + c, 0);
+    return Object.values(this.cart.items ?? []).reduce((s, c) => s + c, 0);
   }
 
   private userSub?: Subscription;
@@ -45,5 +46,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
   async logout(): Promise<void> {
     await this.authService.logout();
+    location.reload();
   }
 }

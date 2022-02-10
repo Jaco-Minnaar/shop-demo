@@ -29,4 +29,12 @@ export class CartComponent implements OnInit, OnDestroy {
   get itemCount(): number {
     return this.cart ? countTotalItemsInCart(this.cart) : 0;
   }
+
+  async clearCart() {
+    if (!this.cart) return;
+
+    if (confirm('Are you sure you want to clear all items in your cart?')) {
+      await this.cartService.clearCart(this.cart);
+    }
+  }
 }

@@ -46,14 +46,14 @@
         >
           <button
             class="btn btn-primary w-100"
-            *ngIf="!userCart || !userCart.items[product.id]"
+            *ngIf="!userCart || !userCart.items || !userCart.items[product.id]"
             (click)="modifyCart(product.id, 1)"
           >
             Add To cart
           </button>
 
           <div
-            *ngIf="userCart && userCart.items[product.id] > 0"
+            *ngIf="userCart && userCart.items && userCart.items[product.id] > 0"
             class="d-flex justify-content-between w-100"
           >
             <button
