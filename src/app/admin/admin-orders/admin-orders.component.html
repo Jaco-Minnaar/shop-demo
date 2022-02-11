@@ -1,1 +1,4 @@
-<p>admin-orders works!</p>
+<div class="container-md">
+  <h3>Orders</h3>
+  <app-order-table [orders]="(orders$ | async) ?? []"></app-order-table>
+</div>

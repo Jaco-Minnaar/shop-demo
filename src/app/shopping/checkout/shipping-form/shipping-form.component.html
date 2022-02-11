@@ -1,0 +1,65 @@
+<div class="container-fluid" *ngIf="shippingForm">
+  <form [formGroup]="shippingForm">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input
+        type="text"
+        class="form-control"
+        id="name"
+        placeholder="Name"
+        formControlName="name"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="name" class="form-label">Address Line 1</label>
+      <input
+        type="text"
+        class="form-control"
+        id="addLine1"
+        placeholder="Address Line 1"
+        formControlName="address-line-1"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="addLine2" class="form-label">Address Line 2</label>
+      <input
+        type="text"
+        class="form-control"
+        id="addLine2"
+        placeholder="Address Line 2"
+        formControlName="address-line-2"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="addLine3" class="form-label">Address Line 3</label>
+      <input
+        type="text"
+        class="form-control"
+        id="addLine3"
+        placeholder="Address Line 3"
+        formControlName="address-line-3"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="city" class="form-label">City</label>
+      <input
+        type="text"
+        class="form-control"
+        id="city"
+        placeholder="City"
+        formControlName="city"
+        required
+      />
+    </div>
+    <button
+      class="btn btn-primary"
+      (click)="submitShippingInfo()"
+      [disabled]="shippingForm.invalid"
+    >
+      Place Order
+    </button>
+  </form>
+</div>

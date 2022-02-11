@@ -1,0 +1,12 @@
+<div class="container-md" *ngIf="cart">
+  <div class="row">
+    <div class="col">
+      <app-shipping-form
+        (newOrderPlaced)="submitOrder($event)"
+      ></app-shipping-form>
+    </div>
+    <div class="col">
+      <app-product-list-card [cart]="cart"></app-product-list-card>
+    </div>
+  </div>
+</div>

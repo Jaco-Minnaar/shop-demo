@@ -26,17 +26,22 @@ export abstract class Service<T extends BaseModel> {
     );
   }
 
-  createItem(item: T): Observable<void> {
+  async createItem(item: T): Promise<string> {
     const newId = push(child(ref(this.db), this.path)).key;
 
-    if (!newId) return of();
+    if (!newId) {
+      throw new Error('Failure to create new item');
+    }
 
     item.id = newId;
-    return from(update(ref(this.db), { [`${this.path}/${newId}`]: item }));
+
+    await update(ref(this.db), { [`${this.path}/${newId}`]: item });
+
+    return newId;
   }
 
-  updateItem(item: T): Observable<void> {
-    return from(update(ref(this.db), { [`${this.path}/${item.id}`]: item }));
+  updateItem(item: T): Promise<void> {
+    return update(ref(this.db), { [`${this.path}/${item.id}`]: item });
   }
 
   deleteItem(id: string): Observable<void> {

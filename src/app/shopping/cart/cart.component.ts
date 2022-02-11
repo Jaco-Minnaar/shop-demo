@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { countTotalItemsInCart } from 'src/app/helpers/cart-helpers';
+import { countTotalProductsInMap } from 'src/app/helpers/cart-helpers';
 import { Cart } from 'src/app/models/Cart';
 import { CartService } from 'src/app/services/cart.service';
 
@@ -27,7 +27,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   get itemCount(): number {
-    return this.cart ? countTotalItemsInCart(this.cart) : 0;
+    return this.cart ? countTotalProductsInMap(this.cart.items ?? {}) : 0;
   }
 
   async clearCart() {

@@ -38,14 +38,16 @@ export class CartService {
       switchMap((user) => {
         if (!user) {
           console.log('no logged in user');
-          let cart = this.getCart(this.getOrCreateCartId());
-
-          if (!cart) {
-            const newCartId = this.createNew();
-            cart = this.getCart(newCartId);
-          }
-
-          return cart;
+          return this.getCart(this.getOrCreateCartId()).pipe(
+            switchMap((cart) => {
+              if (!cart || cart.uid) {
+                const newCartId = this.createNew();
+                this.setCart(newCartId);
+                return this.getCart(newCartId);
+              }
+              return of(cart);
+            })
+          );
         }
 
         return this.generateUserCart(user);
@@ -102,11 +104,12 @@ export class CartService {
           return of(userCart);
         }
 
+        console.log(storedId);
         return this.getCart(storedId).pipe(
           take(1),
           switchMap((cart) => {
             if (!cart) {
-              console.error('currentCartId cart does not exist');
+              console.error('storedId cart does not exist');
               return of(userCart);
             }
 

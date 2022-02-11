@@ -22,8 +22,9 @@ const routes: Routes = [
   },
 
   {
-    path: 'profile/orders',
-    component: OrdersComponent,
+    path: 'profile',
+    loadChildren: () =>
+      import('./profile/profile.module').then((m) => m.ProfileModule),
     canActivate: [AuthGuard],
   },
   {

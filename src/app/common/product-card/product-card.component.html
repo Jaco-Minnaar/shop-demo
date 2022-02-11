@@ -11,7 +11,7 @@
     <div class="card-body">
       <h4 class="card-title">{{ product.name || "Product Title" }}</h4>
       <p class="card-text" *ngIf="product.price && product.price >= 0">
-        {{ product.price | currency: "R ":true }}
+        {{ product.price | currency: "R " }}
       </p>
       <ng-content></ng-content>
     </div>

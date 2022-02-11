@@ -97,10 +97,9 @@ export class AdminProductInfoComponent implements OnInit {
       imageUrl,
     };
 
-    firstValueFrom(
-      !this.newProduct
-        ? this.productService.updateItem(product)
-        : this.productService.createItem(product)
+    (!this.newProduct
+      ? this.productService.updateItem(product)
+      : this.productService.createItem(product)
     )
       .then(() => this.location.back())
       .catch((err) => alert(err));

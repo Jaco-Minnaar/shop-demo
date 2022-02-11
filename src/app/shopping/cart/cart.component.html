@@ -3,5 +3,8 @@
   <p>You have {{ itemCount }} items in your cart.</p>
   <app-cart-table [cart]="cart"></app-cart-table>
 
-  <button class="btn btn-danger" (click)="clearCart()">Clear Cart</button>
+  <div class="col d-flex justify-content-between">
+    <button class="btn btn-danger" (click)="clearCart()">Clear Cart</button>
+    <a routerLink="../checkout" class="btn btn-primary">Checkout</a>
+  </div>
 </div>

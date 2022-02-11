@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
 import { map, Observable, of, Subscription, switchMap, tap } from 'rxjs';
-import { cartKeys } from 'src/app/helpers/cart-helpers';
+import { mapKeys } from 'src/app/helpers/cart-helpers';
 import { Cart } from 'src/app/models/Cart';
 import { Product } from 'src/app/models/Product';
 import { CartService } from 'src/app/services/cart.service';
@@ -30,7 +30,7 @@ export class CartTableComponent implements OnInit, OnDestroy {
   get cartProductKeys(): string[] {
     if (!this.cart) return [];
 
-    return cartKeys(this.cart);
+    return mapKeys(this.cart.items ?? {});
   }
 
   get totalPrice(): number {
