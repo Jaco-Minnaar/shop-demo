@@ -11,7 +11,6 @@ import {
 } from '@angular/fire/database';
 import { equalTo, orderByChild, push } from 'firebase/database';
 import {
-  first,
   firstValueFrom,
   from,
   map,
@@ -20,120 +19,156 @@ import {
   switchMap,
   take,
   tap,
+  zip,
 } from 'rxjs';
 import { FirebaseAuthService } from '../auth/firebase-auth.service';
 import { Cart } from '../models/Cart';
+import { ShopUser } from '../models/ShopUser';
+
+const CART_ID_KEY = 'cart_id';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
   private readonly path = '/carts';
-  private currentCartId?: string;
 
-  get userCart$(): Observable<Cart | null> {
+  get userCart$(): Observable<Cart> {
     return this.authService.appUser$.pipe(
       switchMap((user) => {
         if (!user) {
-          console.log('no user');
-          if (!this.currentCartId) {
-            return this.createNew();
+          console.log('no logged in user');
+          let cart = this.getCart(this.getOrCreateCartId());
+
+          if (!cart) {
+            const newCartId = this.createNew();
+            cart = this.getCart(newCartId);
           }
 
-          return this.getCart(this.currentCartId);
+          return cart;
         }
 
-        return list(
-          query(ref(this.db, this.path), orderByChild('uid'), equalTo(user.uid))
-        ).pipe(
-          map((changes) => changes[0]?.snapshot.val() ?? null),
-          switchMap((userCart: Cart | null) => {
-            if (this.currentCartId && this.currentCartId !== userCart?.id) {
-              return from(
-                firstValueFrom(this.getCart(this.currentCartId))
-              ).pipe(
-                switchMap((cart) => {
-                  if (!cart) {
-                    // TODO: If cart from currentCartId doesn't exist somehow, create new cart
-                    console.error('currentCartId cart does not exist');
-                    return of(null);
-                  }
-
-                  cart.items ??= {};
-
-                  if (!userCart) {
-                    if (cart.uid === '' || cart.uid === user.uid) {
-                      return of(cart);
-                    }
-
-                    return this.createNew(user.uid);
-                  }
-
-                  if (userCart && cart.uid !== '' && cart.uid !== user.uid) {
-                    return of(userCart);
-                  }
-
-                  const workingCart: Cart = {
-                    id: userCart.id,
-                    uid: user.uid,
-                  };
-                  userCart.items ??= {};
-                  const combinedKeys = Array.from(
-                    new Set(
-                      Object.keys(userCart.items ?? []).concat(
-                        Object.keys(cart.items ?? [])
-                      )
-                    )
-                  );
-
-                  if (combinedKeys.length > 0) {
-                    workingCart.items = {};
-
-                    for (const key of combinedKeys) {
-                      const amount1 = cart.items[key] ?? 0;
-                      const amount2 = userCart.items[key] ?? 0;
-
-                      workingCart.items[key] = amount1 + amount2;
-                    }
-                  }
-
-                  this.currentCartId = workingCart.id;
-                  this.deleteCart(cart.id)
-                    .then(() => this.update(workingCart))
-                    .catch((err) => console.error(err));
-
-                  return of(workingCart);
-                })
-              );
-            }
-
-            if (!userCart) {
-              console.log('no existing cart id');
-              return this.createNew(user.uid);
-            }
-
-            return of(userCart);
-          })
-        );
+        return this.generateUserCart(user);
       }),
       map((cart) => {
-        if (cart && !cart.items) {
-          cart.items = {};
-        }
+        if (!cart) throw new Error('Cart is null');
 
         return cart;
       })
     );
   }
 
-  constructor(private db: Database, private authService: FirebaseAuthService) {
-    this.currentCartId = localStorage.getItem('cart_id') ?? undefined;
-    localStorage.removeItem('cart_id');
+  constructor(private db: Database, private authService: FirebaseAuthService) {}
 
-    this.authService.subscribe(() => {
-      if (this.currentCartId)
-        localStorage.setItem('cart_id', this.currentCartId);
-    });
+  private mergeCarts(cart1: Cart, cart2: Cart, id: string, uid: string) {
+    const workingCart: Cart = {
+      id,
+      uid,
+    };
+
+    cart1.items ??= {};
+    cart2.items ??= {};
+
+    const combinedKeys = Array.from(
+      new Set(
+        Object.keys(cart1.items ?? []).concat(Object.keys(cart2.items ?? []))
+      )
+    );
+
+    if (combinedKeys.length > 0) {
+      workingCart.items = {};
+
+      for (const key of combinedKeys) {
+        const amount1 = cart1.items[key] ?? 0;
+        const amount2 = cart2.items[key] ?? 0;
+
+        workingCart.items[key] = amount1 + amount2;
+      }
+    }
+
+    return workingCart;
+  }
+
+  private generateUserCart(user: ShopUser): Observable<Cart | null> {
+    return this.getCartFromUid(user.uid).pipe(
+      switchMap((userCart) => {
+        if (!userCart) {
+          return this.getCart(this.getOrCreateCartId());
+        }
+
+        const storedId = this.getStoredCartId();
+
+        if (!storedId || userCart.id === storedId) {
+          return of(userCart);
+        }
+
+        return this.getCart(storedId).pipe(
+          take(1),
+          switchMap((cart) => {
+            if (!cart) {
+              console.error('currentCartId cart does not exist');
+              return of(userCart);
+            }
+
+            cart.items ??= {};
+
+            if (!userCart) {
+              if (cart.uid === '' || cart.uid === user.uid) {
+                return of(cart);
+              }
+
+              return this.getCart(this.createNew(user.uid));
+            }
+
+            if (userCart && cart.uid !== '' && cart.uid !== user.uid) {
+              return of(userCart);
+            }
+
+            const mergedCart = this.mergeCarts(
+              userCart,
+              cart,
+              userCart.id,
+              user.uid
+            );
+
+            this.setCart(mergedCart.id);
+
+            return from(
+              this.deleteCart(cart.id)
+                .then(() => this.update(mergedCart))
+                .then(() => mergedCart)
+            );
+          })
+        );
+      })
+    );
+  }
+
+  private getCartFromUid(uid: string): Observable<Cart | null> {
+    return list(
+      query(ref(this.db, this.path), orderByChild('uid'), equalTo(uid))
+    ).pipe(map((changes) => changes[0]?.snapshot.val() ?? null));
+  }
+
+  private getStoredCartId(): string | null {
+    return localStorage.getItem(CART_ID_KEY);
+  }
+
+  private getOrCreateCartId(uid?: string): string {
+    const existingCartId = this.getStoredCartId();
+
+    console.log('existing cart id:', existingCartId);
+
+    if (existingCartId) return existingCartId;
+
+    const newCartId = this.createNew(uid);
+    this.setCart(newCartId);
+
+    return newCartId;
+  }
+
+  private setCart(cartId: string) {
+    localStorage.setItem(CART_ID_KEY, cartId);
   }
 
   private deleteCart(id: string): Promise<void> {
@@ -146,16 +181,13 @@ export class CartService {
     );
   }
 
-  private createNew(uid?: string): Observable<Cart | null> {
+  private createNew(uid?: string): string {
     console.log('creating new cart');
     const newId = push(child(ref(this.db), this.path)).key;
 
     if (!newId) {
-      console.error('Failed to create new cart');
-      return of(null);
+      throw new Error('Failed to create new cart');
     }
-
-    this.currentCartId = newId;
 
     const newCart: Cart = {
       id: newId,
@@ -163,10 +195,9 @@ export class CartService {
       uid: uid ?? '',
     };
 
-    return from(this.update(newCart)).pipe(
-      switchMap(() => object(ref(this.db, `${this.path}/${newId}`))),
-      map((item) => item.snapshot.val())
-    );
+    this.update(newCart);
+
+    return newId;
   }
 
   update(cart: Cart): Promise<void> {
